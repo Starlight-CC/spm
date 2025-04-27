@@ -1,5 +1,15 @@
 sleep(0)
-local settings = registry.get("Fission2.settings")
+--local settings = registry.get("Fission2.settings")
+local settings = {
+    reactor = "fissionReactorLogicAdapter_0",
+    turbineNum = 2,
+    turbines = {
+        ["0"]="turbineValve_1",
+        ["1"]="turbineValve_2"
+    },
+    overclock = false,
+    maxDmg = 25
+}
 
 ------------------------------------------------
 
@@ -20,12 +30,12 @@ end)
 
 addRule("TURBINE SHUTDOWN",function()
     local count = 0
-    for i,_ in pairs(settings.turbines)
+    for i,_ in pairs(settings.turbines) do
         if data.turbines[i].energy >= 95 then
             count=count+1
         end
     end
-    if count >= settings.turbineNum=1 then
+    if count >= settings.turbineNum - 1 then
         return true
     else
         return false
@@ -126,13 +136,49 @@ for i,v in pairs(settings.turbines) do
 end
 
 updateData()
-
+local state = 0
+local function scram()
+    state = 3
+    reactor.scram()
+end
 local trigger,exeption = false,""
+
+local function drawBox(x,y,w,h,c)
+    term.setTextColor(c)
+    term.setCursorPos(x,y)
+    term.write(string.rep("\127",w))
+    term.setCursorPos(x,y+h)
+    term.write(string.rep("\127",w))
+    term.setCursorPos(x,y)
+    local i = 0
+    while i ~= h do
+        term.setCursorPos(x,y+i)
+        term.write("\127")
+        i=i+1
+    end
+    term.setCursorPos(x+w-1,y)
+    i = 0
+    while i ~= h do
+        term.setCursorPos(x+w-1,y+i)
+        term.write("\127")
+        i=i+1
+    end
+end
+
+local function updateDisplay()
+    drawBox(2,8,w-2,h-9)
+end
+
+local function updateMain()
+    drawBox(2,2,w-2,5)
+end
 while true do
     updateData()
     trigger,exeption = checkRules()
     if trigger then
         scram(exeption)
     end
-    
+    updateDisplay()
+    updateMain()
+end    
 
