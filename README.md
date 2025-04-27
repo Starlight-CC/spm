@@ -1,0 +1,2 @@
+# spm
+Starlight Package Manager
