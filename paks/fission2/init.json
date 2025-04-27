@@ -10,7 +10,7 @@
         "arch":"SLKernel:T"
     },
     "fs":{
-        "~/bin/fissin2.lua":"/fission2.lua",
+        "~/bin/fission2.lua":"/fission2.lua",
         "$SETUP":"/setup.lua"
     }
 }

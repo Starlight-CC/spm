@@ -1,10 +1,4 @@
 sleep(0)
-local STATES = {
-	READY = 1, -- Reactor is off and can be started with the lever
-	RUNNING = 2, -- Reactor is running and all rules are met
-	ESTOP = 3, -- Reactor is stopped due to rule(s) being violated
-	UNKNOWN = 4, -- Reactor or turbine peripherals are missing
-}
 local settings = registry.get("Fission2.settings")
 
 ------------------------------------------------
@@ -47,16 +41,98 @@ addRule("REACTOR COOLANT",function()
 end)
 
 addRule("REACTOR WASTE",function()
-    if data.reactor.wasteLvl >= 75 then
+    if data.reactor.wasteLvl >= 95 then
         return true
     else
         return false
     end
 end)
 
+local function checkRules()
+    for i,v in pairs(rules) do
+        if v() then
+            return true,i
+        end
+    end
+    return false
+end
+
 local function addDisplay(name,func)
     display[#display+1]=func
 end
 
 addDisplay("REACTOR DAMAGE | ",function()
-)
+    if data.reactor.damage >= 20 then
+        return data.reactor.damage,colors.red
+    elseif data.reactor.damage >= 10 then
+        return data.reactor.damage,colors.orange
+    else
+        return data.reactor.damage,colors.green
+    end
+end)
+
+addDisplay("REACTOR COOLANT | ",function()
+    if data.reactor.coolantLvl <= 50 then
+        return data.reactor.coolantLvl,colors.red
+    elseif data.reactor.coolantLvl <= 75 then
+        return data.reactor.coolantLvl,colors.orange
+    else
+        return data.reactor.coolantLvl,colors.green
+    end
+end)
+
+addDisplay("REACTOR WASTE | ",function()
+    if data.reactor.wasteLvl >= 75 then
+        return data.reactor.wasteLvl,colors.red
+    elseif data.reactor.wasteLvl >= 50 then
+        return data.reactor.wasteLvl,colors.orange
+    else
+        return data.reactor.wasteLvl,colors.green
+    end
+end)
+
+for i,_ in pairs(settings.turbines) do
+    addDisplay("TURBINE "..i.."ENERGY | ",function()
+        if data.reactor.wasteLvl >= 75 then
+            return data.turbine[i].energy,colors.red
+        elseif data.reactor.wasteLvl >= 50 then
+            return data.turbine[i].energy,colors.orange
+        else
+            return data.turbine[i].energy,colors.green
+        end
+    end)
+end
+
+local function updateData()
+    data = {
+        reactor = {
+            damage = reactor.getDamagePercent()*100,
+            coolantLvl = reactor.getCoolantFilledPercentage()*100,
+            wasteLvl = reactor.getWasteFilledPercentage()*100
+        },
+        turbine = {}
+    }
+    for i,v in pairs(settings.turbines) do
+        data.turbine[i] = {
+            energy = turbines[i].getEnergyFilledPercentage()*100
+        }
+    end
+end
+
+local reactor = peripheral.get(settings.reactor)
+local turbines = {}
+for i,v in pairs(settings.turbines) do
+    turbines[i]=peripheral.get(v)
+end
+
+updateData()
+
+local trigger,exeption = false,""
+while true do
+    updateData()
+    trigger,exeption = checkRules()
+    if trigger then
+        scram(exeption)
+    end
+    
+
