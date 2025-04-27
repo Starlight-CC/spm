@@ -1,0 +1,16 @@
+{
+    "metadata":{
+        "name":"Fission2",
+        "discription":"fission reactor controller",
+        "requires":[],
+        "license":"GPL 3.0",
+        "authors":[
+            "Astronand"
+        ],
+        "arch":"SLKernel:T"
+    },
+    "fs":{
+        "~/bin/fissin2.lua":"/fission2.lua",
+        "$SETUP":"/setup.lua"
+    }
+}

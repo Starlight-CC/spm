@@ -1,0 +1,15 @@
+{
+    "metadata":{
+        "name":"SLCompiler",
+        "discription":"Starlight compiler",
+        "requires":[],
+        "license":"GPL 3.0",
+        "authors":[
+            "Astronand"
+        ],
+        "arch":"CraftOS:T"
+    },
+    "fs":{
+        "/bin/SLCompiler.lua":"/SLCompiler.lua"
+    }
+}

@@ -1,0 +1,2 @@
+#!/sys/serv/deleteMe.sys -r
+-- Example package file will delete if ran

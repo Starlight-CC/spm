@@ -1,0 +1,25 @@
+{
+    "metadata":{
+        "name":"example",
+        "discription":"example pak",
+        "requires":[],
+        "license":"GPL 3.0",
+        "authors":[
+            "Astronand"
+        ],
+        "arch":"Any"
+    },
+    "fs":{
+        "~/spm/example/init.json":"/metadata.json",
+        "~/spm/example/TObin.lua":"/file.txt",
+        "~/spm/example/TOect.conf":"/file.txt",
+        "~/spm/example/TOvar.var":"/file.txt",
+        "~/spm/example/TOlib.la":"/file.txt",
+        "~/spm/example/TOUSRbin.lua":"/file.txt",
+        "~/spm/example/TOUSRect.conf":"/file.txt",
+        "~/spm/example/TOUSRvar.var":"/file.txt",
+        "~/spm/example/TOUSRlib.la":"/file.txt",
+        "~/spm/example/TODSKTOP.env":"/file.txt",
+        "~/spm/example/DRIVER.sys":"/file.txt"
+    }
+}
