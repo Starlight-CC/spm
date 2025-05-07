@@ -18,7 +18,7 @@
         "~/ect/TOUSRect.conf":"/TOUSRect.conf",
         "~/var/TOUSRvar.var":"/TOUSRvar.var",
         "~/lib/TOUSRlib.la":"/TOUSRlib.la",
-        "$DSKTOP_ENV":"/TODSKTOP.env",
+        "$DSKTOP":"/TODSKTOP.env",
         "$DRIVER":"/DRIVER.sys"
     },
     "registry":{
