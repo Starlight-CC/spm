@@ -125,6 +125,7 @@ end
 local function getDependents(package,ignoreCache,update)
     local ret = {}
     local metadata = getManifest(package,ignoreCache)
+    metadata = metadata.metadata
     if metadata.requires == nil then
         metadata.requires = {}
     end
@@ -155,15 +156,15 @@ local function save()
 end
 
 local function processManifest(manifest,ignoreCache)
-    pak[tostring(manifest.name)]={}
-    pak[tostring(manifest.name)].version=manifest.version
-    pak[tostring(manifest.name)].authors=manifest.authors
-    pak[tostring(manifest.name)].license=manifest.license
+    pak[tostring(manifest.metadata.name)]={}
+    pak[tostring(manifest.metadata.name)].version=manifest.metadata.version
+    pak[tostring(manifest.metadata.name)].authors=manifest.metadata.authors
+    pak[tostring(manifest.metadata.name)].license=manifest.metadata.license
     for i,v in pairs(manifest.fs) do
         if string.sub(i,1,1) == "~" then
             if not _ARCH then
                 local file = fs.open(string.sub(i,2),"w")
-                local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
+                local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.metadata.name)..v,ignoreCache)
                 file.write(content)
                 file.close()
             else
@@ -171,12 +172,12 @@ local function processManifest(manifest,ignoreCache)
             end
         elseif string.sub(i,1,1) == "/" then
             local file = fs.open(i,"w")
-            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.metadata.name)..v,ignoreCache)
             file.write(content)
             file.close()
         else
             local file = fs.open(shell.dir()..i,"w")
-            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.metadata.name)..v,ignoreCache)
             file.write(content)
             file.close()
         end
