@@ -103,6 +103,9 @@ end
 local function getDependents(package,ignoreCache,update)
     local ret = {}
     local metadata = getManifest(package,ignoreCache)
+    if metadata.requires == nil then
+        metadata.requires = {}
+    end
     for _,v in ipairs(metadata.requires) do 
         table.insert(ret,v)
         for _,v in ipairs(getDependents(v,ignoreCache,update)) do
