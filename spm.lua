@@ -166,9 +166,9 @@ local function downloadPackage(package,ignoreCache,update)
     local dependents = getDependents(package,ignoreCache,update)
     for _,v in ipairs(dependents) do
         local dependent = getManifest(v,ignoreCache)
-        processManifest(dependent)
+        processManifest(dependent,ignoreCache)
     end
-    processManifest(metadata)
+    processManifest(metadata,ignoreCache)
 end
 
 local function download(package,ignoreCache,update,alwaysTrue)
@@ -191,9 +191,11 @@ local function download(package,ignoreCache,update,alwaysTrue)
         if event == "key" then
             if param == keys.y then
                 ret = "y"
+                print("y")
                 break
             elseif param == keys.n then
                 ret = "n"
+                print("n")
                 break
             end
         end
@@ -242,7 +244,7 @@ end
 
 local function updateRegistry()
     local data = api.get("https://api.github.com/repos/Starlight-CC/spm/contents/paks",args.flags["-c"])
-    reg = json.decode(data)
+    reg = decode(data)
 end
 
 if args.command == "setup" then
