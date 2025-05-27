@@ -53,7 +53,7 @@ local cache = decode(cachefile.readAll())
 cachefile.close()
 cachefile = nil
 
-local function api.get(url,ignoreCache)
+function api.get(url,ignoreCache)
     if ignoreCache then
         local content = http.get(url)
         if content then
