@@ -229,11 +229,11 @@ if reg == nil then
 end
 
 local pakfile = fs.open("/var/spm/paks.json","r")
-local paks = decode(pakfile.readAll())
+local pak = decode(pakfile.readAll())
 pakfile.close()
 pakfile = nil
-if paks == nil then
-    paks = {}
+if pak == nil then
+    pak = {}
 end
 
 if args.command ~= "setup" then
