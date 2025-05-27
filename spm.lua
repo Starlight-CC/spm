@@ -141,7 +141,7 @@ local function processManifest(manifest,ignoreCache)
         if string.sub(i,1,1) == "~" then
             if not _ARCH then
                 local file = fs.open(string.sub(i,2),"w")
-                local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+                local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
                 file.write(content)
                 file.close()
             else
@@ -149,12 +149,12 @@ local function processManifest(manifest,ignoreCache)
             end
         elseif string.sub(i,1,1) == "/" then
             local file = fs.open(i,"w")
-            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
             file.write(content)
             file.close()
         else
             local file = fs.open(shell.dir()..i,"w")
-            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.name)..v,ignoreCache)
             file.write(content)
             file.close()
         end
