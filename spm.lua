@@ -52,6 +52,9 @@ local cachefile = fs.open("/var/spm/cache.json","r")
 local cache = decode(cachefile.readAll())
 cachefile.close()
 cachefile = nil
+if cache == nil then
+    cache = {}
+end
 
 function api.get(url,ignoreCache)
     if ignoreCache then
@@ -130,7 +133,7 @@ local function processManifest(manifest,ignoreCache)
     pak[tostring(manifest.name)]={}
     pak[tostring(manifest.name)].version=manifest.version
     pak[tostring(manifest.name)].authors=manifest.authors
-    pak[tostring(manifest.name)].license-manifest.license
+    pak[tostring(manifest.name)].license=manifest.license
     for i,v in pairs(manifest.fs) do
         if string.sub(i,1,1) == "~" then
             if not _ARCH then
@@ -216,11 +219,17 @@ local regfile = fs.open("/var/spm/reg.json","r")
 local reg = decode(regfile.readAll())
 regfile.close()
 regfile = nil
+if reg == nil then
+    reg = {}
+end
 
-local pakfile = fs.open("/var/spm/reg.json","r")
+local pakfile = fs.open("/var/spm/paks.json","r")
 local paks = decode(pakfile.readAll())
 pakfile.close()
 pakfile = nil
+if paks == nil then
+    paks = {}
+end
 
 if args.command ~= "setup" then
     if not json then
