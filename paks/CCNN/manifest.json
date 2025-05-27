@@ -11,6 +11,7 @@
         "arch":"Any"
     },
     "fs":{
-        "/lib/CCNN/init":"/main.lua"
+        "/lib/CCNN/init.lua":"/main.lua",
+        "/lib/CCNN/test.lua":"/test.lua"
     }
 }
