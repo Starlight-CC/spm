@@ -2,7 +2,6 @@
     "metadata":{
         "name":"Fission2",
         "discription":"fission reactor controller",
-        "requires":[],
         "license":"GPL 3.0",
         "authors":[
             "Astronand"

@@ -1,0 +1,15 @@
+{
+    "metadata":{
+        "name":"CCNN",
+        "discription":"A basic neural network library for CC:Tweaked",
+        "requires":[],
+        "license":"GPL 3.0",
+        "authors":[
+            "Astronand"
+        ],
+        "arch":"Any"
+    },
+    "fs":{
+        "/lib/CCNN/init":"/main.lua"
+    }
+}

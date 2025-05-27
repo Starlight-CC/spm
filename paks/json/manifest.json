@@ -1,0 +1,14 @@
+{
+    "metadata":{
+        "name":"json",
+        "discription":"json encoder/decoder for lua",
+        "license":"GPL 3.0",
+        "authors":[
+            "rxi"
+        ],
+        "arch":"any"
+    },
+    "fs":{
+        "/lib/json/init":"/main.lua"
+    }
+}
