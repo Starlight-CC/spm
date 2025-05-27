@@ -58,9 +58,11 @@ end
 
 function api.get(url,ignoreCache)
     if ignoreCache then
-        local content = http.get(url)
-        if content then
-            content = content.readAll()
+        local handle = http.get(url)
+        local content = ""
+        if handle then
+            content = handle.readAll()
+            handle.close()
         else
             error("Invaild PAK")
         end
@@ -70,9 +72,11 @@ function api.get(url,ignoreCache)
         if isin(url,cache,true) then
             local content = cache[tostring(url)]
             if content.time+120000 < os.epoch() then
-                content = http.get(url)
-                if content.readAll then
-                    content = content.readAll()
+                local handle = http.get(url)
+                local content = ""
+                if handle then
+                    content = handle.readAll()
+                    handle.close()
                 else
                     error("Invaild PAK")
                 end
@@ -82,9 +86,11 @@ function api.get(url,ignoreCache)
                 return content.data
             end
         else
-            local content = http.get(url)
-            if content.readAll then
-                content = content.readAll()
+            local handle = http.get(url)
+            local content = ""
+            if handle then
+                content = handle.readAll()
+                handle.close()
             else
                 error("Invaild PAK")
             end
