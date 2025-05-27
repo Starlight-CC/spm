@@ -251,7 +251,11 @@ end
 
 local function updateRegistry()
     local data = api.get("https://api.github.com/repos/Starlight-CC/spm/contents/paks",args.flags["-c"])
-    reg = decode(data)
+    data = decode(data)
+    reg = {}
+    for i,v in ipairs(data) do
+        reg[i]=v.name
+    end
 end
 
 if args.command == "setup" then
