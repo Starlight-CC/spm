@@ -176,7 +176,7 @@ local function processManifest(manifest,ignoreCache)
             file.write(content)
             file.close()
         else
-            local file = fs.open(shell.dir()..i,"w")
+            local file = fs.open(shell.dir().."/"..i,"w")
             local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..tostring(manifest.metadata.name)..v,ignoreCache)
             file.write(content)
             file.close()

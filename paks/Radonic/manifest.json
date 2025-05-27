@@ -1,16 +1,16 @@
 {
     "metadata":{
-        "name":"SLCompiler",
-        "discription":"Starlight compiler",
+        "name":"Radonic",
+        "discription":"Simple radar for CC:Tweaked",
         "version":"1.0.0",
         "license":"GPL 3.0",
         "authors":[
             "Astronand",
             "minecartchris"
         ],
-        "arch":"SLKernel:T"
+        "arch":"any"
     },
     "fs":{
-        "/bin/Radonic":"/Radonic.lua"
+        "/bin/Radonic/init":"/Radonic.lua"
     }
 }
