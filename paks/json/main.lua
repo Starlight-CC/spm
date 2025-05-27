@@ -1,4 +1,3 @@
-#!/bin/lua
 --
 -- json.lua
 --
