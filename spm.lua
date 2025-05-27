@@ -243,7 +243,7 @@ for i,v in ipairs(startArgs) do
     end
 end
 
-if args.command ~= "setup" then
+if args.command ~= "setup" and not args.flags["-j"] then
     if not json then
         error("Please run \"spm setup\" to install spm")
     end
@@ -257,7 +257,10 @@ local function updateRegistry()
         reg[i]=v.name
     end
 end
-
+if args.flags["-j"] then
+    encode = textutils.serialiseJSON
+    decode = textutils.unserialiseJSON
+end
 if args.command == "setup" then
     download("json",true,true,true)
     updateRegistry()
