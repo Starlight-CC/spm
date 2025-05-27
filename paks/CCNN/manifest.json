@@ -2,6 +2,7 @@
     "metadata":{
         "name":"CCNN",
         "discription":"A basic neural network library for CC:Tweaked",
+        "version":"1.0.0",
         "requires":[],
         "license":"GPL 3.0",
         "authors":[

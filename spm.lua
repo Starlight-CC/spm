@@ -4,9 +4,10 @@ local textutils = textutils
 local fs = fs
 local http = http
 local os = os
+local shell = shell
 local json = {}
 
-if include then
+if _ARCH then
     http = require("os.http")
     fs = require("os.fs")
     os = require("os")
@@ -18,6 +19,15 @@ else
     else
         json = nil
     end
+end
+
+local decode,encode = {},{}
+if json then
+    decode = json.decode
+    encode = json.encode
+else
+    decode = textutils.unserialiseJSON
+    encode = textutils.serialiseJSON
 end
 
 local function isin(val,tbl,typ)
@@ -37,7 +47,7 @@ local function isin(val,tbl,typ)
     return false
 end
 
-local cachefile = fs.open("/var/spm/cache.var","r")
+local cachefile = fs.open("/var/spm/cache.json","r")
 local cache = cachefile.readAll()
 cachefile.close()
 cachefile = nil
@@ -82,38 +92,87 @@ end
 
 local function getManifest(package,ignoreCache)
     local metadata = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..package.."/manifest.json",ignoreCache)
-    if not json then
-        metadata = textutils.unserialiseJSON(metadata)
-    else
-        metadata = json.decode(metadata)
-    end
+    metadata = decode(metadata)
     return metadata
 end
 
-local function getDependents(package,ignoreCache)
+local function getDependents(package,ignoreCache,update)
     local ret = {}
     local metadata = getManifest(package,ignoreCache)
     for _,v in ipairs(metadata.requires) do 
         table.insert(ret,v)
-        for _,v in ipairs(getDependents(v,ignoreCache)) do
-            if not isin(v,ret) then
+        for _,v in ipairs(getDependents(v,ignoreCache,update)) do
+            if not isin(v,ret) or isin(v,reg) then
                 table.insert(ret,v)
             end
         end
     end
     return ret
 end
-local function download(package,ignoreCache,alwaysTrue)
+
+local function save()
+    local regfile = fs.open("/var/spm/reg.json","w")
+    local pakfile = fs.open("/var/spm/reg.json","w")
+    local cachefile = fs.open("/var/spm/cache.json","w")
+    regfile.write(encode(reg))
+    pakfile.write(encode(paks))
+    cachefile.write(encode(cache))
+    regfile.close()
+    pakfile.close()
+    cachefile.close()
+    regfile = nil
+    pakfile = nil
+    cachefile = nil
+end
+
+local function processManifest(manifest,ignoreCache)
+    pak[tostring(manifest.name)]={}
+    pak[tostring(manifest.name)].version=manifest.version
+    pak[tostring(manifest.name)].authors=manifest.authors
+    pak[tostring(manifest.name)].license-manifest.license
+    for i,v in pairs(manifest.fs) do
+        if 
+
+local function downloadPackage(package,ignoreCache,update)
     local metadata = getManifest(package,ignoreCache)
-    local dependents = getDependents(package,ignoreCache)
+    local dependents = getDependents(package,ignoreCache,update)
+    for _,v in ipairs(dependents) do
+        local dependent = getManifest(v,ignoreCache)
+
+
+
+local function download(package,ignoreCache,update,alwaysTrue)
+    local metadata = getManifest(package,ignoreCache)
+    local dependents = getDependents(package,ignoreCache,update)
     print("the following packages will be installed")
     print(table.concat(dependents," | "))
     print("(Y/N)")
     if alwaysTrue then
         print("y")
     end
-    os -- WIP
 
+    local ret = ""
+    while true do
+        if alwaysTrue then
+            ret = "y"
+            break
+        end
+        local event, param = os.pullEvent()
+        if event == "key" then
+            if param == keys.y then
+                ret = "y"
+                break
+            elseif param == keys.n then
+                ret = "n"
+                break
+            end
+        end
+    end
+
+    if ret == "y" then
+        downloadPackage(package,ignoreCache,update)
+    end
+end
 
 local args = {}
 args.flags = {}
@@ -129,19 +188,28 @@ for i,v in ipairs(startArgs) do
     end
 end
         
-local regfile = fs.open("/var/spm/reg.var","r")
+local regfile = fs.open("/var/spm/reg.json","r")
 local reg = regfile.readAll()
 regfile.close()
 regfile = nil
+
+local pakfile = fs.open("/var/spm/reg.json","r")
+local paks = pakfile.readAll()
+pakfile.close()
+pakfile = nil
 
 if args.command ~= "setup" then
     if not json then
         error("Please run \"spm setup\" to install spm")
     end
 end
+
 if args.command == "setup" then
     download("json")
+    updateRegistry()
     print("spm installed")
 elseif args.command == "update" then
     local api.get("https://api.github.com/repos/Starlight-CC/spm/contents/paks",args.flags["-c"])
     json.decode()
+end
+save()

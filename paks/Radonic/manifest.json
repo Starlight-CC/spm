@@ -2,6 +2,7 @@
     "metadata":{
         "name":"SLCompiler",
         "discription":"Starlight compiler",
+        "version":"1.0.0",
         "license":"GPL 3.0",
         "authors":[
             "Astronand",
