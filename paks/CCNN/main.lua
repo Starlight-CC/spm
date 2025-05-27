@@ -32,6 +32,10 @@ local function forward(layers, input)
 end
 
 local function train_net(self, inputs, targets, opts)
+    local opts = opts
+    if not opts then
+        opts = {}
+    end
     local opt = {
         epochs = opts.epochs or 100,
         learning_rate = opts.learning_rate or 0.1,

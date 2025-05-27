@@ -266,5 +266,9 @@ elseif args.command == "update" then
     updateRegistry()
 elseif args.command == "install" then
     download(args[1])
+elseif args.command == "list" then
+    for i,v in ipairs(reg) do
+        print(v)
+    end
 end
 save()
