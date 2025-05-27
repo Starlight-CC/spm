@@ -11,6 +11,7 @@ if _ARCH then
     http = require("os.http")
     fs = require("os.fs")
     os = require("os")
+    shell = require("shell")
     json = require("json")
     textutils = require("cc.textutils")
 else
@@ -48,7 +49,7 @@ local function isin(val,tbl,typ)
 end
 
 local cachefile = fs.open("/var/spm/cache.json","r")
-local cache = cachefile.readAll()
+local cache = decode(cachefile.readAll())
 cachefile.close()
 cachefile = nil
 
@@ -131,15 +132,38 @@ local function processManifest(manifest,ignoreCache)
     pak[tostring(manifest.name)].authors=manifest.authors
     pak[tostring(manifest.name)].license-manifest.license
     for i,v in pairs(manifest.fs) do
-        if 
+        if string.sub(i,1,1) == "~" then
+            if not _ARCH then
+                local file = fs.open(string.sub(i,2),"w")
+                local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+                file.write(content)
+                file.close()
+            else
+                --WIP
+            end
+        elseif string.sub(i,1,1) == "/" then
+            local file = fs.open(i,"w")
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+            file.write(content)
+            file.close()
+        else
+            local file = fs.open(shell.dir()..i,"w")
+            local content = api.get("https://raw.githubusercontent.com/Starlight-CC/spm/refs/heads/main/paks/"..manifest.name..v,ignoreCache)
+            file.write(content)
+            file.close()
+        end
+    end
+end
 
 local function downloadPackage(package,ignoreCache,update)
     local metadata = getManifest(package,ignoreCache)
     local dependents = getDependents(package,ignoreCache,update)
     for _,v in ipairs(dependents) do
         local dependent = getManifest(v,ignoreCache)
-
-
+        processManifest(dependent)
+    end
+    processManifest(metadata)
+end
 
 local function download(package,ignoreCache,update,alwaysTrue)
     local metadata = getManifest(package,ignoreCache)
@@ -180,7 +204,7 @@ for i,v in ipairs(startArgs) do
     if i == 1 then
         args.command = v
     else
-        if string.sub(1,1) == "-" then
+        if string.sub(v,1,1) == "-" then
             args.flags[tostring(v)]=true
         else
             args[i-1]=v
@@ -189,12 +213,12 @@ for i,v in ipairs(startArgs) do
 end
         
 local regfile = fs.open("/var/spm/reg.json","r")
-local reg = regfile.readAll()
+local reg = decode(regfile.readAll())
 regfile.close()
 regfile = nil
 
 local pakfile = fs.open("/var/spm/reg.json","r")
-local paks = pakfile.readAll()
+local paks = decode(pakfile.readAll())
 pakfile.close()
 pakfile = nil
 
@@ -204,12 +228,18 @@ if args.command ~= "setup" then
     end
 end
 
+local function updateRegistry()
+    local data = api.get("https://api.github.com/repos/Starlight-CC/spm/contents/paks",args.flags["-c"])
+    reg = json.decode(data)
+end
+
 if args.command == "setup" then
-    download("json")
+    download("json",true,true,true)
     updateRegistry()
     print("spm installed")
 elseif args.command == "update" then
-    local api.get("https://api.github.com/repos/Starlight-CC/spm/contents/paks",args.flags["-c"])
-    json.decode()
+    updateRegistry()
+elseif args.command == "install" then
+    download(args[1])
 end
 save()
