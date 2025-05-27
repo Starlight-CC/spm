@@ -56,6 +56,22 @@ if cache == nil then
     cache = {}
 end
 
+local regfile = fs.open("/var/spm/reg.json","r")
+local reg = decode(regfile.readAll())
+regfile.close()
+regfile = nil
+if reg == nil then
+    reg = {}
+end
+
+local pakfile = fs.open("/var/spm/paks.json","r")
+local pak = decode(pakfile.readAll())
+pakfile.close()
+pakfile = nil
+if pak == nil then
+    pak = {}
+end
+
 function api.get(url,ignoreCache)
     if ignoreCache then
         local handle = http.get(url)
@@ -224,22 +240,6 @@ for i,v in ipairs(startArgs) do
             args[i-1]=v
         end
     end
-end
-        
-local regfile = fs.open("/var/spm/reg.json","r")
-local reg = decode(regfile.readAll())
-regfile.close()
-regfile = nil
-if reg == nil then
-    reg = {}
-end
-
-local pakfile = fs.open("/var/spm/paks.json","r")
-local pak = decode(pakfile.readAll())
-pakfile.close()
-pakfile = nil
-if pak == nil then
-    pak = {}
 end
 
 if args.command ~= "setup" then
